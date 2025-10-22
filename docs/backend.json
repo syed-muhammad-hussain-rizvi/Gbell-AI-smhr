@@ -22,8 +22,8 @@
           "type": "object",
           "description": "Timestamp indicating when the idea was submitted."
         },
-        "generatedPitch": {
-          "$ref": "#/entities/GeneratedPitch"
+        "generatedWebsite": {
+          "$ref": "#/entities/GeneratedWebsite"
         },
         "designSuggestion": {
           "$ref": "#/entities/DesignSuggestion"
@@ -36,48 +36,43 @@
         "createdAt"
       ]
     },
-    "GeneratedPitch": {
-      "title": "GeneratedPitch",
+    "GeneratedWebsite": {
+      "title": "GeneratedWebsite",
       "type": "object",
-      "description": "Represents the AI-generated pitch details for a startup idea.",
+      "description": "Represents the AI-generated website details for a startup idea.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the GeneratedPitch entity."
+          "description": "Unique identifier for the GeneratedWebsite entity."
         },
         "pitchIdeaId": {
           "type": "string",
-          "description": "Reference to the PitchIdea this pitch was generated for."
+          "description": "Reference to the PitchIdea this website was generated for."
         },
         "startupName": {
           "type": "string",
           "description": "The AI-generated startup name."
         },
-        "tagline": {
-          "type": "string",
-          "description": "The AI-generated tagline for the startup."
+        "navbar": {
+          "type": "object"
         },
-        "elevatorPitch": {
-          "type": "string",
-          "description": "The AI-generated elevator pitch."
+        "hero": {
+          "type": "object"
         },
-        "targetAudience": {
-          "type": "string",
-          "description": "The AI-generated description of the target audience."
+        "features": {
+          "type": "object"
         },
-        "heroSectionCopy": {
-          "type": "string",
-          "description": "The AI-generated hero section copy for the startup's website."
+        "testimonials": {
+          "type": "object"
+        },
+        "footer": {
+          "type": "object"
         }
       },
       "required": [
         "id",
         "pitchIdeaId",
-        "startupName",
-        "tagline",
-        "elevatorPitch",
-        "targetAudience",
-        "heroSectionCopy"
+        "startupName"
       ]
     },
     "DesignSuggestion": {
@@ -94,28 +89,18 @@
           "description": "Reference to the GeneratedPitch this design suggestion belongs to."
         },
         "colorPalette": {
-          "type": "array",
-          "description": "An array of suggested colors for the startup's brand.",
-          "items": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-          }
+          "type": "object"
         },
-        "logoConcepts": {
-          "type": "array",
-          "description": "An array of descriptions or references to suggested logo concepts.",
-          "items": {
-            "type": "string"
-          }
+        "logoConcept": {
+          "type": "string",
+          "description": "A description of the suggested logo concept."
         }
       },
       "required": [
         "id",
         "generatedPitchId",
         "colorPalette",
-        "logoConcepts"
+        "logoConcept"
       ]
     },
     "User": {

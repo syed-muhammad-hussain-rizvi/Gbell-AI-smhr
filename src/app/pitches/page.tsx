@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { collection, Timestamp } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -27,16 +27,28 @@ export default function PitchesPage() {
 
   const { data: pitches, isLoading } = useCollection<PitchIdea>(pitchesQuery);
 
+  const getCreationDate = (pitch: PitchIdea) => {
+    if (!pitch.createdAt) return 'Date not available';
+    
+    // createdAt can be a Firestore Timestamp object or a plain object from serialization
+    const seconds = (pitch.createdAt as Timestamp)?.seconds ?? (pitch.createdAt as any)?._seconds;
+    
+    if (typeof seconds === 'number') {
+      return new Date(seconds * 1000).toLocaleDateString();
+    }
+    
+    return 'Invalid date';
+  }
+
   const sortedPitches = useMemo(() => {
     if (!pitches) return [];
-    // Ensure createdAt is a valid date before sorting
-    return [...pitches].filter(p => p.createdAt).sort(
-      (a, b) => {
-        const dateA = (a.createdAt as any)?.toDate ? (a.createdAt as any).toDate() : new Date(0);
-        const dateB = (b.createdAt as any)?.toDate ? (b.createdAt as any).toDate() : new Date(0);
-        return dateB.getTime() - dateA.getTime();
-      }
-    );
+    return [...pitches]
+      .filter(p => p.createdAt)
+      .sort((a, b) => {
+        const secondsA = (a.createdAt as Timestamp)?.seconds ?? (a.createdAt as any)?._seconds ?? 0;
+        const secondsB = (b.createdAt as Timestamp)?.seconds ?? (b.createdAt as any)?._seconds ?? 0;
+        return secondsB - secondsA;
+      });
   }, [pitches]);
 
   if (isUserLoading || isLoading) {
@@ -59,13 +71,6 @@ export default function PitchesPage() {
         </Button>
       </div>
     );
-  }
-
-  const getCreationDate = (pitch: PitchIdea) => {
-    if (!pitch.createdAt) return 'Date not available';
-    const date = (pitch.createdAt as any)?.toDate ? (pitch.createdAt as any).toDate() : new Date(pitch.createdAt);
-    if (isNaN(date.getTime())) return 'Invalid date';
-    return date.toLocaleDateString();
   }
 
   return (
